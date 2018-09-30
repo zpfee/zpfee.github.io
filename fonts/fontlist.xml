@@ -1,0 +1,8 @@
+﻿<fontlist>
+    <font name="华文彩云">
+        <shape name="STCaiyun (TrueType)" file="STCAIYUN.TTF" />
+    </font>
+    <font name="华文隶书">
+        <shape name="STLiti (TrueType)" file="STLITI.TTF" />
+    </font>
+</fontlist>
