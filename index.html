@@ -20,6 +20,25 @@ canvas {
 	background:#000;
 	cursor: pointer;
 }
+button{
+	position: absolute;
+	bottom:20px;
+	left:650px;
+	cursor: pointer;
+	 font-family: '华文隶书', 'Arial', sans-serif;
+    display: inline-block;
+    font-size: 1em;
+    padding: 0.8em 2em;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+    border: none;
+    transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
+    box-shadow: 0 2px 25px rgba(100, 100, 130, 0.5);
+
+}
 </style>
 
 </head>
@@ -27,6 +46,7 @@ canvas {
 <audio src="mp3/最美的期待.mp3" type="audio/mpeg" autoplay=""></audio>
 <img id="titleImpage" src="images/qianming.png" alt="titleImpage"  style="display:none">
 <canvas width="1326" height="609"></canvas>
+<button id="stop">stop</button>
 
 	<script>
 	{
@@ -61,13 +81,37 @@ canvas {
 						link.size * size / 3,
 						link.lum,
 						link.force,
-						i==5?'':link.disk
+						i==5||i==7?'':link.disk
 					)
 				);
 			}
 		}
 		update() {
+			
 			if (++this.frame % 20 === 0) this.dir = -this.dir;
+			if (
+				dbMenu &&
+				this === dbMenu 
+			) {
+				
+				switch(dbMenu.menuName){
+				case '工具':location.href="tools.html";
+				break;
+				case '打印':location.href="print.html";
+				break;
+				case '导出':location.href="export.html";
+				break;
+				case '简历':location.href="resume.html";
+				break;
+				case '经验':location.href="experience.html";
+				break;
+				case '其它':location.href="other.html";
+				break;
+				}
+				dbMenu = null;
+				
+			}
+			if(pause){start();return;}
 			if (
 				dancerDrag &&
 				this === dancerDrag &&
@@ -89,27 +133,6 @@ canvas {
 				dancers.sort(function(d0, d1) {
 					return d0.size - d1.size;
 				});
-			}if (
-				dbMenu &&
-				this === dbMenu 
-			) {
-				
-				switch(dbMenu.menuName){
-				case '工具':location.href="tools.html";
-				break;
-				case '打印':location.href="print.html";
-				break;
-				case '导出':location.href="export.html";
-				break;
-				case '简历':location.href="resume.html";
-				break;
-				case '经验':location.href="experience.html";
-				break;
-				case '其它':location.href="other.html";
-				break;
-				}
-				dbMenu = null;
-				
 			}
 			// ---- 初始化 ----
 			for (const link of this.links) {
@@ -228,7 +251,7 @@ canvas {
 					if (disk===''&&axis) {
 					ict.font=size+"px 华文隶书";
 					ict.fillStyle="rgb(96,57,18)";
-					ict.fillText(parent.menuName,size*0.2,size*0.8);
+					ict.fillText(parent.menuName,size*0.4,size*0.8);
 					}
 				}
 				if (axis) {
@@ -296,6 +319,7 @@ canvas {
 		},
 		dblclick(e) {
 			this.move(e);
+			//if(IsPointInMatrix({x:canvas.width/2,y:canvas.height * 0.85+30},{x:canvas.width/2+60,y:canvas.height * 0.85+30},{x:canvas.width/2+60,y:canvas.height * 0.85+60},{x:canvas.width/2,y:canvas.height * 0.85+60},{x:pointer.x,y:pointer.y}))pause=pause?false:true;
 			for (const dancer of dancers) {
 				for (const point of dancer.points) {
 					const dx = pointer.x - point.x;
@@ -337,14 +361,12 @@ canvas {
 		}
 	};
 	// ---- 初始化 ----
-	const dancers = [];
+	let dancers = [];
 	let ground = 1.0;
 	const ctx = canvas.init();
 	pointer.init(canvas);
-	let dancerDrag = null;
-	let dbMenu = null;
-	let pause = null;
-	let pointDrag = null;
+	let dancerDrag = null,dbMenu = null;
+	let pause = null,pointDrag = null;
 	// ---- 主要循环 ----
 	const run = () => {
 		requestAnimationFrame(run);
@@ -358,6 +380,8 @@ canvas {
 		ctx.fillText("飞飞独立博客",canvas.width/2-55*3,60);
 		ctx.font="0.85em 华文隶书";
 		ctx.fillText("@ 2018 周鹏飞  (可双击进入菜单)",20,canvas.height * 0.85+60);
+		//ctx.font="2em 华文隶书";
+		//ctx.fillText("stop",canvas.width/2,canvas.height * 0.85+60);
 		for (const dancer of dancers) {
 			dancer.update();
 			dancer.draw();
@@ -469,6 +493,23 @@ canvas {
 		menu:['打印','导出','工具','简历','经验','其它']
 	};
 	
+	 
+     //判断点p是否在p1p2p3p4的正方形内
+     function IsPointInMatrix(p1, p2, p3, p4, p) {
+		// 计算 |p1 p2| X |p1 p|
+    function GetCross(p1, p2, p) {
+        return (p2.x - p1.x) * (p.y - p1.y) - (p.x - p1.x) * (p2.y - p1.y);
+     }
+         let isPointIn = GetCross(p1, p2, p) * GetCross(p3, p4, p) >= 0 && GetCross(p2, p3, p) * GetCross(p4, p1, p) >= 0;
+         return isPointIn;
+     }
+	 document.querySelector('#stop').onclick=function(e){pause=pause?false:true;e.preventDefault;};
+	let two=2;
+	function start(){
+	//ctx.clearRect(0,0,canvas.width,canvas.height);
+	two--;
+	if(!two)return;
+	dancers=[];
 	for (let i = 0,j=1; i < 6; i++,j+=1.4) {
 		dancers.push(
 			new Robot(
@@ -482,6 +523,10 @@ canvas {
 			)
 		);
 	}
+	
+	}
+	
+	start();
 	run();
 }
 
