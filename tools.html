@@ -301,7 +301,7 @@
 					inputs.each(function(i,v){
 					allTitle+=title;
 					var $input=$(v),field=$.trim($input.attr("name")),dict=$input.data("dictcode");
-					var uField=field.replace(/[A-Z]/g,'_$&').toUpperCase();
+					var uField=/_/.test(field)?field.toUpperCase():field.replace(/[A-Z]/g,'_$&').toUpperCase();
 					var isDate=/date/.test($input.parent().attr("class"));
 					let t1=dict?tp:isDate?allTitle.match(new RegExp(title,'g')).length>1?dateTo:dateFrom:likeTp;
 					t1=t1.replace('zpf',title);
