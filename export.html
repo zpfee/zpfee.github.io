@@ -1,0 +1,74 @@
+<!DOCTYPE html><html><head><title>导出说明</title><meta charset='utf-8'><link href='https://cdn.maxiang.io/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+<h2 id="导出说明">导出说明</h2>
+
+
+
+<h4 id="1一键导出配置">1、一键导出配置</h4>
+
+<ul><li>设置a标签的<strong>data-method=”<code>export</code>” </strong></li>
+<li>设置a标签的<strong>data-url=”/*” </strong>不为空就行</li>
+<li>其它就是要注意<strong>F4框架</strong>中，<strong>data-beforeRequest</strong>如果加了此属性，回调函数没有设置status为<code>ture</code>会不执行。</li>
+</ul>
+
+<p><code>示例：</code></p>
+
+<pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line">&lt;a data-url=<span class="hljs-string">"/service/order/export/excel"</span> data-model=<span class="hljs-string">"business"</span>data-method=<span class="hljs-string">"export"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"btn btn-outline ajaxrest"</span>&gt;
+</div><div class="hljs-line">   <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"fa fa-download"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span></span>
+</div><div class="hljs-line">   导出
+</div><div class="hljs-line">&lt;<span class="hljs-regexp">/a&gt;</span>
+</div></code></pre>
+
+
+
+<h4 id="2导出明细">2、导出明细</h4>
+
+<ul><li>设置a标签的<strong>data-method=”<code>export</code>” </strong></li>
+<li>必须设置a标签的<strong>data-url=”/cust/manage/cust/query” </strong>为查询明细对应的path</li>
+<li>设置a标签的<strong>data(‘columns’,[定义要导出的列])</strong></li>
+<li>同时注意<strong>F4框架</strong>中，<strong>data-beforeRequest</strong>如果加了此属性，回调函数没有设置status为<code>ture</code>会不执行。</li>
+</ul>
+
+<p><code>示例：</code></p>
+
+<pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line">&lt;a  id=<span class="hljs-string">"exportBtn"</span> data-url=<span class="hljs-string">"/cust/manage/cust/query"</span> data-model=<span class="hljs-string">"business"</span> data-beforeRequest=<span class="hljs-string">"true"</span> data-method=<span class="hljs-string">"export"</span> 
+</div><div class="hljs-line">   <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"btn btn-outline ajaxrest"</span> &gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"fa fa-download"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span></span> 导出
+</div><div class="hljs-line">&lt;<span class="hljs-regexp">/a&gt;</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line">$(<span class="hljs-string">"#exportBtn"</span>,container).data(<span class="hljs-string">'columns'</span>,[
+</div><div class="hljs-line">                {<span class="hljs-attr">field</span>:<span class="hljs-string">"ORG_CODE"</span>,<span class="hljs-attr">title</span>:<span class="hljs-string">"服务中心编码"</span>},
+</div><div class="hljs-line">                {<span class="hljs-attr">field</span>:<span class="hljs-string">"ORG_NAME"</span>,<span class="hljs-attr">title</span>:<span class="hljs-string">"服务中心名称"</span>},
+</div><div class="hljs-line">                {<span class="hljs-attr">field</span>:<span class="hljs-string">"CUST_NO"</span>,<span class="hljs-attr">title</span>:<span class="hljs-string">"客户编号"</span>}
+</div><div class="hljs-line">                ]);
+</div></code></pre>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line">$(<span class="hljs-string">"a[data-beforeRequest='true']"</span>,container).on(<span class="hljs-string">"beforeRequest.dms"</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event,returnResult</span>)</span>{
+</div><div class="hljs-line"><span class="hljs-comment">//          。。。处理逻辑</span>
+</div><div class="hljs-line">            returnResult.status = <span class="hljs-literal">true</span>;
+</div><div class="hljs-line">        });
+</div></code></pre>
+
+
+
+<h4 id="3还可配置的一些其他属性">3、还可配置的一些其他属性</h4>
+
+<ul><li>可设置a标签的<strong>data-ctrlUrl </strong>属性,默认是<code>/common/exportXls/export</code>,它是公共方法的controller,我们可以定义自已的controller，做一些处理然后调<code>CommonExportXlsController</code>的<code>exportData(param,request,response)</code></li>
+<li>可设置a标签的<strong>data-tableId </strong>属性,默认是导出当前页面的第一个列表，如果有多个列表，可以指定导出列表的ID格式为<code>"#ID"</code>。</li>
+<li>可设置a标签的<strong>data-fileName </strong>属性为导出的文件名,默认是页面取列表名。</li>
+<li>导出完成后会触发<code>exportEnd.dms</code>事件，有需要可以绑定此事件。</li>
+<li>对要导出的列可以设置页面显示但不导出，添加<code>dislodge:true</code>。</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-javascript hljs"><div class="hljs-line">...
+</div><div class="hljs-line">{<span class="hljs-attr">field</span>:<span class="hljs-string">"CUST_NAME"</span>,<span class="hljs-attr">title</span>:<span class="hljs-string">"客户名称"</span>,<span class="hljs-attr">dislodge</span>:<span class="hljs-literal">true</span>},
+</div><div class="hljs-line">...
+</div></code></pre></div></body></html>
