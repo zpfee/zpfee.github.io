@@ -1,5 +1,5 @@
 ﻿CACHE MANIFEST
-# 2018-10-11 v1.0.0
+# 2018-10-11 v1.0.1
 js/jquery.js
 js/bootstrap.js
 css/bootstrap.css
@@ -8,6 +8,7 @@ fonts/STLITI.TTF
 images/qianming.png
 images/404.jpg
 mp3/最美的期待.mp3
+tools.html
 
 
 NETWORK:
