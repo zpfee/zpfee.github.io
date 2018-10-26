@@ -228,6 +228,8 @@
 		});
 		$("#setPo").on("click", function(){
 			var src=$("#textSour").val(),lastIndex=src.indexOf("</form>");
+			target.val('');
+			template=template.replace(/\w+(?=\.set)/,prompt("请输入你的PO名字:","dataPO"));
 			if(/^SELECT/.test(src)){
 				var patt=/A.(\w+)[,\n]/g,item,arr=[],del={},res={};
 				while((item=patt.exec(src))!=null){
